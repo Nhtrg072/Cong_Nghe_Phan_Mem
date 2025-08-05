@@ -48,4 +48,3 @@ class QuanLyCaiDat:
     def lay_cac_gia_tri_win_condition(self, kich_thuoc_ban):
         """Lấy các giá trị có thể cho win condition"""
         return [str(i) for i in range(3, min(kich_thuoc_ban + 1, 7))]
-
