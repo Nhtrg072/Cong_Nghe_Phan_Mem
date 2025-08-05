@@ -2,7 +2,7 @@
 
 ## 🎮 Cách chạy game:
 
-- Double-click vào file `AdvancedCaroGame.exe` trong thư mục `dist/`
+- Double-click vào file `CaroGame.exe`
 
 ## 🎯 Cách chơi chi tiết:
 
@@ -11,10 +11,6 @@
 2. **Lượt chơi**: Người chơi X luôn đi trước
 3. **Đặt quân**: Click vào ô trống để đặt quân
 4. **Thắng**: Người đầu tiên đạt số quân liên tiếp sẽ thắng
-
-### 🎮 **Điều khiển game**:
-- **Mouse**: Click vào ô để đặt quân
-- **Phím số 1-9**: Đặt quân (chỉ với bàn cờ 3x3)
 
 ### ⌨️ **Phím tắt nâng cao**:
 - **R**: Chơi lại ván hiện tại
@@ -44,3 +40,4 @@
 - **🔧 Tùy biến cao**: Từ 3x3 đến 10x10, 3-6 quân thắng
 
 Chúc bạn chơi game vui vẻ! 🎮✨
+
