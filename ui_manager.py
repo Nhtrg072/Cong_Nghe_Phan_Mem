@@ -65,9 +65,9 @@ class QuanLyGiaoDien:
     
     def dat_kich_thuoc_co_dinh(self):
         """Đặt kích thước cửa sổ cố định hiển thị đủ tất cả"""
-        # Kích thước cố định cho tất cả màn hình
-        width_co_dinh = 700
-        height_co_dinh = 700
+        # Kích thước cố định cho tất cả màn hình - to hơn để hiện menu
+        width_co_dinh = 800
+        height_co_dinh = 800
         
         # Đặt kích thước và vô hiệu hóa resize
         self.root.geometry(f"{width_co_dinh}x{height_co_dinh}")
