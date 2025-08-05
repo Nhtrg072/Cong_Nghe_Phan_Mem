@@ -20,6 +20,9 @@ class ManHinhCaiDat:
         self.quan_ly_ui.xoa_man_hinh()
         self.quan_ly_ui.man_hinh_hien_tai = 'settings'
         
+        # Đặt kích thước cố định
+        self.quan_ly_ui.dat_kich_thuoc_co_dinh()
+        
         # Tiêu đề
         title = tk.Label(
             self.root,
