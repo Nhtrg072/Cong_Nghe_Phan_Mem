@@ -17,8 +17,8 @@ class GameCaro:
         # Khởi tạo cơ bản
         self.root = tk.Tk()
         self.root.title("Game Cờ Caro - OOP Structure")
-        self.root.geometry("600x700")
-        self.root.resizable(True, True)
+        self.root.geometry("800x800")
+        self.root.resizable(False, False)  # Cố định kích thước
         
         # Khởi tạo managers
         self.quan_ly_cai_dat = QuanLyCaiDat()
