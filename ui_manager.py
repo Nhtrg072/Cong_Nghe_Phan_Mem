@@ -49,13 +49,13 @@ class QuanLyGiaoDien:
         # Đặt màu nền cho cửa sổ
         self.root.configure(bg=self.mau_sac['bg'])
         
-        # Font chữ
+        # Font chữ - to hơn
         self.font_chu = {
-            'title': ('Arial', 24, 'bold'),
-            'heading': ('Arial', 16, 'bold'),
-            'button': ('Arial', 12, 'bold'),
-            'text': ('Arial', 10),
-            'cell': ('Arial', 20, 'bold')
+            'title': ('Arial', 28, 'bold'),
+            'heading': ('Arial', 18, 'bold'),
+            'button': ('Arial', 14, 'bold'),
+            'text': ('Arial', 12),
+            'cell': ('Arial', 26, 'bold')
         }
     
     def xoa_man_hinh(self):
@@ -63,54 +63,29 @@ class QuanLyGiaoDien:
         for widget in self.root.winfo_children():
             widget.destroy()
     
-    def dieu_chinh_kich_thuoc_cua_so(self):
-        """Tự động chỉnh kích thước cửa sổ theo bàn cờ"""
-        kich_thuoc = self.quan_ly_cai_dat.lay_cai_dat('board_size')
+    def dat_kich_thuoc_co_dinh(self):
+        """Đặt kích thước cửa sổ cố định hiển thị đủ tất cả"""
+        # Kích thước cố định cho tất cả màn hình
+        width_co_dinh = 700
+        height_co_dinh = 700
         
-        # Kích thước cơ bản
-        width_co_ban = 600
-        height_co_ban = 700
-        
-        # Tính toán kích thước nút
-        kich_thuoc_nut = max(2, 8 - kich_thuoc // 2)
-        pixel_moi_nut = kich_thuoc_nut * 12
-        
-        # Tính kích thước cần thiết
-        width_ban_co = kich_thuoc * pixel_moi_nut + 50
-        height_ban_co = kich_thuoc * (pixel_moi_nut // 2) + 300
-        
-        # Kích thước cửa sổ mới
-        width_moi = max(width_co_ban, width_ban_co + 100)
-        height_moi = max(height_co_ban, height_ban_co + 200)
-        
-        # Không cho quá lớn
-        max_width = int(self.root.winfo_screenwidth() * 0.9)
-        max_height = int(self.root.winfo_screenheight() * 0.9)
-        
-        width_moi = min(width_moi, max_width)
-        height_moi = min(height_moi, max_height)
-        
-        self.root.geometry(f"{width_moi}x{height_moi}")
+        # Đặt kích thước và vô hiệu hóa resize
+        self.root.geometry(f"{width_co_dinh}x{height_co_dinh}")
+        self.root.resizable(False, False)  # Không cho resize
         
         # Căn giữa cửa sổ
         self.root.update_idletasks()
-        x = (self.root.winfo_screenwidth() // 2) - (width_moi // 2)
-        y = (self.root.winfo_screenheight() // 2) - (height_moi // 2)
-        self.root.geometry(f"{width_moi}x{height_moi}+{x}+{y}")
+        x = (self.root.winfo_screenwidth() // 2) - (width_co_dinh // 2)
+        y = (self.root.winfo_screenheight() // 2) - (height_co_dinh // 2)
+        self.root.geometry(f"{width_co_dinh}x{height_co_dinh}+{x}+{y}")
     
     def hien_menu(self, callbacks):
         """Hiển thị menu chính"""
         self.xoa_man_hinh()
         self.man_hinh_hien_tai = 'menu'
         
-        # Đặt lại kích thước cho menu
-        self.root.geometry("600x700")
-        
-        # Căn giữa cửa sổ
-        self.root.update_idletasks()
-        x = (self.root.winfo_screenwidth() // 2) - (600 // 2)
-        y = (self.root.winfo_screenheight() // 2) - (700 // 2)
-        self.root.geometry(f"600x700+{x}+{y}")
+        # Đặt kích thước cố định
+        self.dat_kich_thuoc_co_dinh()
         
         # Tiêu đề game
         tieu_de = tk.Label(
