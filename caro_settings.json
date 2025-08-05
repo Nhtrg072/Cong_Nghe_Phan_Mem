@@ -1,0 +1,11 @@
+{
+  "kich_thuoc_ban_co": 5,
+  "dieu_kien_thang": 5,
+  "che_do_game": "ai",
+  "do_kho_ai": "trung_binh",
+  "theme": "light",
+  "board_size": 5,
+  "win_condition": 3,
+  "game_mode": "ai",
+  "ai_difficulty": "easy"
+}
