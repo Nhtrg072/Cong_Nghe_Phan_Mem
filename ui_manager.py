@@ -1,139 +1,183 @@
-# ui_manager.py - Quản lý UI cơ bản
+import tkinter as tk
+from tkinter import messagebox, ttk
+
+# Class quản lý giao diện người dùng
 class QuanLyGiaoDien:
-    """Class quản lý style, màu sắc, font chữ và themes"""
+    def __init__(self, root, quan_ly_cai_dat):
+        self.root = root
+        self.quan_ly_cai_dat = quan_ly_cai_dat
+        self.man_hinh_hien_tai = None
+        self.board_buttons = []
+        self.current_player_label = None
+        self.score_x_label = None
+        self.score_o_label = None
+        self.status_label = None
+        
+        self.thiet_lap_style()
     
-    def __init__(self, theme='light'):
-        self.theme = theme
-        self.thiet_lap_theme()
-    
-    def thiet_lap_theme(self):
-        """Thiết lập theme màu sắc"""
-        if self.theme == 'dark':
+    def thiet_lap_style(self):
+        """Thiết lập màu sắc và font chữ"""
+        if self.quan_ly_cai_dat.lay_cai_dat('theme') == 'dark':
+            # Theme tối
             self.mau_sac = {
-                'nen': '#2d2d2d',
-                'chu': '#ffffff',
-                'chinh': '#4a90e2',
-                'phu': '#6c757d',
-                'thanh_cong': '#28a745',
-                'nguy_hiem': '#dc3545',
-                'canh_bao': '#ffc107',
-                'thong_tin': '#17a2b8',
-                'sang': '#3d3d3d',
-                'nen_nut': '#4a4a4a',
-                'vien': '#555555'
+                'bg': '#2d2d2d',
+                'fg': '#ffffff',
+                'primary': '#4a90e2',
+                'secondary': '#6c757d',
+                'success': '#28a745',
+                'danger': '#dc3545',
+                'warning': '#ffc107',
+                'info': '#17a2b8',
+                'light': '#3d3d3d',
+                'button_bg': '#4a4a4a'
             }
-        else:  # light theme
+        else:
+            # Theme sáng (mặc định)
             self.mau_sac = {
-                'nen': '#f0f2f5',
-                'chu': '#2c3e50',
-                'chinh': '#4a90e2',
-                'phu': '#6c757d',
-                'thanh_cong': '#28a745',
-                'nguy_hiem': '#dc3545',
-                'canh_bao': '#ffc107',
-                'thong_tin': '#17a2b8',
-                'sang': '#ffffff',
-                'nen_nut': '#ffffff',
-                'vien': '#dee2e6'
+                'bg': '#f0f2f5',
+                'fg': '#2c3e50',
+                'primary': '#4a90e2',
+                'secondary': '#6c757d',
+                'success': '#28a745',
+                'danger': '#dc3545',
+                'warning': '#ffc107',
+                'info': '#17a2b8',
+                'light': '#ffffff',
+                'button_bg': '#ffffff'
             }
         
+        # Đặt màu nền cho cửa sổ
+        self.root.configure(bg=self.mau_sac['bg'])
+        
+        # Font chữ
         self.font_chu = {
-            'tieu_de': ('Arial', 24, 'bold'),
-            'tieu_de_phu': ('Arial', 16, 'bold'),
-            'nut': ('Arial', 12, 'bold'),
-            'chu_thuong': ('Arial', 10),
-            'o_co': ('Arial', 20, 'bold'),
-            'nho': ('Arial', 8)
+            'title': ('Arial', 24, 'bold'),
+            'heading': ('Arial', 16, 'bold'),
+            'button': ('Arial', 12, 'bold'),
+            'text': ('Arial', 10),
+            'cell': ('Arial', 20, 'bold')
         }
     
-    def dat_theme(self, theme_moi):
-        """Đặt theme mới"""
-        self.theme = theme_moi
-        self.thiet_lap_theme()
+    def xoa_man_hinh(self):
+        """Xóa màn hình hiện tại"""
+        for widget in self.root.winfo_children():
+            widget.destroy()
     
-    def lay_mau(self, ten_mau):
-        """Lấy màu theo tên"""
-        return self.mau_sac.get(ten_mau, '#000000')
-    
-    def lay_font(self, ten_font):
-        """Lấy font theo tên"""
-        return self.font_chu.get(ten_font, ('Arial', 12))
-    
-    def lay_tat_ca_mau(self):
-        """Lấy tất cả màu sắc"""
-        return self.mau_sac.copy()
-    
-    def lay_tat_ca_font(self):
-        """Lấy tất cả font chữ"""
-        return self.font_chu.copy()
-    
-    def tinh_kich_thuoc_nut(self, kich_thuoc_ban_co):
-        """Tính kích thước nút dựa trên kích thước bàn cờ"""
-        kich_thuoc_nut = max(2, 8 - kich_thuoc_ban_co // 2)
-        kich_thuoc_font = max(12, 24 - kich_thuoc_ban_co * 2)
-        return kich_thuoc_nut, kich_thuoc_font
-    
-    def can_giua_cua_so(self, cua_so, rong=600, cao=700):
-        """Căn giữa cửa sổ trên màn hình"""
-        cua_so.update_idletasks()
-        x = (cua_so.winfo_screenwidth() // 2) - (rong // 2)
-        y = (cua_so.winfo_screenheight() // 2) - (cao // 2)
-        cua_so.geometry(f"{rong}x{cao}+{x}+{y}")
-    
-    def tao_style_nut(self, loai_nut='chinh'):
-        """Tạo style cho nút"""
-        mau_nen = self.lay_mau(loai_nut)
-        mau_chu = 'white' if loai_nut not in ['sang', 'nen_nut'] else self.lay_mau('chu')
+    def dieu_chinh_kich_thuoc_cua_so(self):
+        """Tự động chỉnh kích thước cửa sổ theo bàn cờ"""
+        kich_thuoc = self.quan_ly_cai_dat.lay_cai_dat('board_size')
         
-        return {
-            'font': self.lay_font('nut'),
-            'bg': mau_nen,
-            'fg': mau_chu,
-            'relief': 'raised',
-            'bd': 2,
-            'cursor': 'hand2',
-            'activebackground': self._lam_dam_mau(mau_nen),
-            'activeforeground': mau_chu
-        }
-    
-    def tao_style_label(self, loai_label='chu_thuong'):
-        """Tạo style cho label"""
-        return {
-            'font': self.lay_font(loai_label),
-            'bg': self.lay_mau('nen'),
-            'fg': self.lay_mau('chu')
-        }
-    
-    def tao_style_frame(self, co_vien=False):
-        """Tạo style cho frame"""
-        style = {
-            'bg': self.lay_mau('nen')
-        }
+        # Kích thước cơ bản
+        width_co_ban = 600
+        height_co_ban = 700
         
-        if co_vien:
-            style.update({
-                'relief': 'raised',
-                'bd': 1,
-                'highlightbackground': self.lay_mau('vien'),
-                'highlightthickness': 1
-            })
+        # Tính toán kích thước nút
+        kich_thuoc_nut = max(2, 8 - kich_thuoc // 2)
+        pixel_moi_nut = kich_thuoc_nut * 12
         
-        return style
+        # Tính kích thước cần thiết
+        width_ban_co = kich_thuoc * pixel_moi_nut + 50
+        height_ban_co = kich_thuoc * (pixel_moi_nut // 2) + 300
+        
+        # Kích thước cửa sổ mới
+        width_moi = max(width_co_ban, width_ban_co + 100)
+        height_moi = max(height_co_ban, height_ban_co + 200)
+        
+        # Không cho quá lớn
+        max_width = int(self.root.winfo_screenwidth() * 0.9)
+        max_height = int(self.root.winfo_screenheight() * 0.9)
+        
+        width_moi = min(width_moi, max_width)
+        height_moi = min(height_moi, max_height)
+        
+        self.root.geometry(f"{width_moi}x{height_moi}")
+        
+        # Căn giữa cửa sổ
+        self.root.update_idletasks()
+        x = (self.root.winfo_screenwidth() // 2) - (width_moi // 2)
+        y = (self.root.winfo_screenheight() // 2) - (height_moi // 2)
+        self.root.geometry(f"{width_moi}x{height_moi}+{x}+{y}")
     
-    def _lam_dam_mau(self, mau_hex):
-        """Làm đậm màu (cho active state)"""
-        # Chuyển hex sang RGB
-        mau_hex = mau_hex.lstrip('#')
-        if len(mau_hex) == 6:
-            r = int(mau_hex[0:2], 16)
-            g = int(mau_hex[2:4], 16)
-            b = int(mau_hex[4:6], 16)
-            
-            # Làm đậm 20%
-            r = max(0, min(255, int(r * 0.8)))
-            g = max(0, min(255, int(g * 0.8)))
-            b = max(0, min(255, int(b * 0.8)))
-            
-            return f"#{r:02x}{g:02x}{b:02x}"
+    def hien_menu(self, callbacks):
+        """Hiển thị menu chính"""
+        self.xoa_man_hinh()
+        self.man_hinh_hien_tai = 'menu'
         
-        return mau_hex  # Trả về màu gốc nếu không parse được
+        # Đặt lại kích thước cho menu
+        self.root.geometry("600x700")
+        
+        # Căn giữa cửa sổ
+        self.root.update_idletasks()
+        x = (self.root.winfo_screenwidth() // 2) - (600 // 2)
+        y = (self.root.winfo_screenheight() // 2) - (700 // 2)
+        self.root.geometry(f"600x700+{x}+{y}")
+        
+        # Tiêu đề game
+        tieu_de = tk.Label(
+            self.root, 
+            text="🎮 GAME CỜ CARO 🎮",
+            font=self.font_chu['title'],
+            bg=self.mau_sac['bg'],
+            fg=self.mau_sac['fg']
+        )
+        tieu_de.pack(pady=50)
+        
+        # Khung chứa các nút
+        khung_nut = tk.Frame(self.root, bg=self.mau_sac['bg'])
+        khung_nut.pack(pady=20)
+        
+        # Danh sách các nút menu
+        cac_nut = [
+            ("👥 Chơi với người", callbacks['choi_voi_nguoi']),
+            ("🤖 Chơi với máy", callbacks['choi_voi_may']),
+            ("⚙️ Cài đặt", callbacks['cai_dat']),
+            ("ℹ️ Hướng dẫn", callbacks['huong_dan']),
+            ("❌ Thoát", callbacks['thoat'])
+        ]
+        
+        # Tạo từng nút
+        for text, command in cac_nut:
+            nut = tk.Button(
+                khung_nut,
+                text=text,
+                font=self.font_chu['button'],
+                bg=self.mau_sac['primary'],
+                fg='white',
+                width=20,
+                height=2,
+                relief='raised',
+                bd=2,
+                cursor='hand2',
+                command=command
+            )
+            nut.pack(pady=10)
+    
+    def cap_nhat_hien_thi_nguoi_choi(self, nguoi_choi):
+        """Cập nhật hiển thị người chơi hiện tại"""
+        if self.current_player_label:
+            self.current_player_label.config(text=f"Lượt của: {nguoi_choi}")
+            if nguoi_choi == 'X':
+                self.current_player_label.config(fg=self.mau_sac['danger'])
+            else:
+                self.current_player_label.config(fg=self.mau_sac['primary'])
+    
+    def cap_nhat_hien_thi_diem(self, diem_so, che_do_game):
+        """Cập nhật hiển thị điểm số"""
+        if self.score_x_label:
+            self.score_x_label.config(text=f"X: {diem_so['X']}")
+        
+        if self.score_o_label:
+            ten_nguoi_o = "🤖 Máy" if che_do_game == 'ai' else "O"
+            self.score_o_label.config(text=f"{ten_nguoi_o}: {diem_so['O']}")
+    
+    def vo_hieu_hoa_tat_ca_nut(self):
+        """Vô hiệu hóa tất cả nút trên bàn cờ"""
+        kich_thuoc = self.quan_ly_cai_dat.lay_cai_dat('board_size')
+        for hang in range(kich_thuoc):
+            for cot in range(kich_thuoc):
+                self.board_buttons[hang][cot].config(state='disabled')
+    
+    def lam_noi_bat_o_thang(self, cac_o):
+        """Làm nổi bật các ô thắng"""
+        for hang, cot in cac_o:
+            self.board_buttons[hang][cot].config(bg='lightgreen')
