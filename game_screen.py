@@ -13,8 +13,8 @@ class ManHinhGame:
         self.quan_ly_ui.xoa_man_hinh()
         self.quan_ly_ui.man_hinh_hien_tai = 'game'
         
-        # Chỉnh kích thước cửa sổ
-        self.quan_ly_ui.dieu_chinh_kich_thuoc_cua_so()
+        # Đặt kích thước cố định
+        self.quan_ly_ui.dat_kich_thuoc_co_dinh()
         
         # Tạo header
         self.tao_header()
@@ -46,7 +46,8 @@ class ManHinhGame:
         
         back_btn = tk.Button(header_frame, text="🏠 Menu", 
                            font=self.quan_ly_ui.font_chu['button'], 
-                           bg=self.quan_ly_ui.mau_sac['secondary'], fg='white', 
+                           bg=self.quan_ly_ui.mau_sac['secondary'], fg='white',
+                           width=12, height=2,
                            command=self.callbacks['ve_menu'])
         back_btn.pack(side='left')
         
@@ -111,7 +112,7 @@ class ManHinhGame:
         self.quan_ly_ui.score_o_label.pack(side='right', padx=20)
     
     def tao_ban_co(self, quan_ly_cai_dat):
-        """Tạo bàn cờ"""
+        """Tạo bàn cờ với kích thước phù hợp cửa sổ cố định"""
         board_container = tk.Frame(self.root, bg=self.quan_ly_ui.mau_sac['bg'])
         board_container.pack(pady=10, fill='both', expand=True)
         
@@ -121,9 +122,16 @@ class ManHinhGame:
         kich_thuoc = quan_ly_cai_dat.lay_cai_dat('board_size')
         self.quan_ly_ui.board_buttons = []
         
-        # Tính kích thước nút
-        kich_thuoc_nut = max(2, 8 - kich_thuoc // 2)
-        co_chu = max(12, 24 - kich_thuoc * 2)
+        # Tính kích thước nút cho cửa sổ cố định 800x800 - to hơn nữa
+        if kich_thuoc <= 5:
+            kich_thuoc_nut = 5
+            co_chu = 18
+        elif kich_thuoc <= 7:
+            kich_thuoc_nut = 4
+            co_chu = 16
+        else:  # 8, 9, 10
+            kich_thuoc_nut = 3
+            co_chu = 14
         
         # Tạo các nút cho bàn cờ
         for i in range(kich_thuoc):
@@ -146,38 +154,47 @@ class ManHinhGame:
             self.quan_ly_ui.board_buttons.append(hang)
     
     def tao_nut_dieu_khien(self, quan_ly_cai_dat):
-        """Tạo các nút điều khiển"""
+        """Tạo các nút điều khiển với kích thước cố định"""
         control_frame = tk.Frame(self.root, bg=self.quan_ly_ui.mau_sac['bg'])
         control_frame.pack(side='bottom', pady=10, fill='x')
         
         buttons_container = tk.Frame(control_frame, bg=self.quan_ly_ui.mau_sac['bg'])
         buttons_container.pack()
         
+        # Kích thước cố định cho các nút - to hơn
+        button_width = 14
+        button_height = 2
+        font_size = ('Arial', 11, 'bold')
+        
         # Reset button
         reset_btn = tk.Button(buttons_container, text="🔄 Chơi lại", 
-                            font=self.quan_ly_ui.font_chu['button'], 
-                            bg=self.quan_ly_ui.mau_sac['warning'], fg='white', 
+                            font=font_size, 
+                            bg=self.quan_ly_ui.mau_sac['warning'], fg='white',
+                            width=button_width, height=button_height,
                             command=self.callbacks['reset'])
         reset_btn.pack(side='left', padx=5)
         
         # New game button
         new_btn = tk.Button(buttons_container, text="🆕 Game mới", 
-                          font=self.quan_ly_ui.font_chu['button'], 
-                          bg=self.quan_ly_ui.mau_sac['success'], fg='white', 
+                          font=font_size, 
+                          bg=self.quan_ly_ui.mau_sac['success'], fg='white',
+                          width=button_width, height=button_height,
                           command=self.callbacks['game_moi'])
         new_btn.pack(side='left', padx=5)
         
         # Hint button cho AI
         if quan_ly_cai_dat.lay_cai_dat('game_mode') == 'ai':
             hint_btn = tk.Button(buttons_container, text="💡 Gợi ý", 
-                               font=self.quan_ly_ui.font_chu['button'], 
-                               bg=self.quan_ly_ui.mau_sac['info'], fg='white', 
+                               font=font_size, 
+                               bg=self.quan_ly_ui.mau_sac['info'], fg='white',
+                               width=button_width, height=button_height,
                                command=self.callbacks['goi_y'])
             hint_btn.pack(side='left', padx=5)
         
         # Undo button
         undo_btn = tk.Button(buttons_container, text="↶ Hoàn tác", 
-                           font=self.quan_ly_ui.font_chu['button'], 
-                           bg=self.quan_ly_ui.mau_sac['secondary'], fg='white', 
+                           font=font_size, 
+                           bg=self.quan_ly_ui.mau_sac['secondary'], fg='white',
+                           width=button_width, height=button_height,
                            command=self.callbacks['hoan_tac'])
         undo_btn.pack(side='left', padx=5)
